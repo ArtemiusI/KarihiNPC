@@ -1,0 +1,7 @@
+IF
+	Global("C0KarihiServantSpawn","ar8006",0)
+THEN
+RESPONSE #100
+	SetGlobal("C0KarihiServantSpawn","ar8006",1)
+	CreateCreatureImpassable("C0KSERV",[1898.854],SSW)
+END

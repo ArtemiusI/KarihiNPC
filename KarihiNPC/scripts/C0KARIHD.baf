@@ -1,0 +1,25 @@
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Myself,CD_STATE_NOTVALID)
+	AreaCheck("AR2114")
+	Global("C0KarihiFriendTalk3","GLOBAL",2)
+THEN
+  RESPONSE #100
+	StartCutSceneMode()
+	CutSceneId("C0KARIHI")
+	FadeToColor([20.0],0)
+	Wait(2)
+	ActionOverride(Player1,JumpToPoint([206.180]))
+	SmallWait(5)
+	ActionOverride(Player1,Face(SE))
+	JumpToPoint([239.209])
+	SmallWait(5)
+	Face(NE)
+	FadeFromColor([20.0],0)
+	Wait(2)
+    SetGlobal("C0KarihiFriendTalk3","GLOBAL",3)
+	PlaySong(0)
+	PlaySound("C0KASONG")
+	StartDialogueNoSet(Player1)
+END

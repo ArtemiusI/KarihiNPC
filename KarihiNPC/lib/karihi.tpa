@@ -1,0 +1,690 @@
+//AUDIO
+
+LAF HANDLE_AUDIO END
+
+DEFINE_PATCH_FUNCTION ~GET_2DA_ROW~
+	INT_VAR
+		starting_row=0
+		numcolumns=0
+		match_column=0
+		found_it=0
+	STR_VAR
+		match=~DEFA~
+	RET
+		numcols
+		matched
+BEGIN
+		COUNT_2DA_ROWS numcolumns numrows
+		FOR (i = starting_row; i < numrows; ++i) BEGIN
+			READ_2DA_ENTRY i match_column numcolumns string_to_match
+			PATCH_IF (~%string_to_match%~ STRING_EQUAL_CASE ~%match%~) BEGIN
+				matched = i
+				found_it = 1
+				i = numrows
+
+			END
+		END
+		numcols = numcolumns
+		PATCH_IF (found_it = 0) BEGIN
+			PATCH_FAIL ~GET_2DA_ROW: Could not find a row that contains %match% in column %match_column%.~
+		END
+END
+	
+ADD_MUSIC ~C0KAMUS~ ~%MOD_FOLDER%/music/C0KAMUS.mus~
+COPY ~%MOD_FOLDER%/music/c0kamusa.acm~ ~MUSIC/C0KAMUS/c0kamusa.acm~
+
+COPY_EXISTING ~SONGLIST.2da~ ~override~
+	LPF GET_2DA_ROW INT_VAR numcolumns=3 match_column=2 STR_VAR match=~C0KAMUS.mus~ RET therow=matched END
+	READ_2DA_ENTRY therow 0 3 ~song~
+
+	OUTER_SET C0KAMUS = song
+
+///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////// RESISTANCES ///////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+DEFINE_ACTION_FUNCTION	ADD_SPLPROT	INT_VAR	stat = 0	value = 0	relation = 0	RET	new_row		BEGIN
+	ACTION_IF	(stat > 278)	BEGIN	WARN	~SPLPROT.2DA - Stat out of Bounds.~	END
+	ACTION_IF	((stat != 259) AND (stat != 260) AND (relation > 11))	BEGIN	WARN	~SPLPROT.2DA - Relation out of Bounds.~	END
+	COPY_EXISTING ~SPLPROT.2DA~	~override~
+		COUNT_2DA_COLS	cols
+		COUNT_2DA_ROWS cols rows
+		TEXT_SPRINT check_row ~~
+		TEXT_SPRINT check_stat ~~
+		SET new_row = 0
+		FOR(current_row = 0; current_row < rows; ++current_row)	BEGIN	READ_2DA_ENTRY current_row 1 cols check_stat
+			PATCH_IF (~%check_stat%~ STRING_EQUAL ~%stat%~)	BEGIN	READ_2DA_ENTRY current_row 2 cols check_value
+				PATCH_IF (~%check_value%~ STRING_EQUAL ~%value%~)	BEGIN	READ_2DA_ENTRY current_row 3 cols check_relation
+					PATCH_IF (~%check_relation%~ STRING_EQUAL ~%relation%~)	BEGIN	new_row = current_row	current_row = rows	END
+				END
+			END
+		END
+		PATCH_IF (new_row = 0)	BEGIN
+			FOR(current_row = 0; current_row < rows; ++current_row)	BEGIN	READ_2DA_ENTRY current_row 1 cols check_stat
+				PATCH_IF (~%check_stat%~ STRING_EQUAL ~*~)	BEGIN	new_row = current_row	current_row = rows	END
+			END
+			PATCH_IF (new_row = 0)	BEGIN	new_row = rows	INSERT_2DA_ROW rows cols ~%new_row%		   %stat%		   %value%		   %relation%~
+			END	ELSE	BEGIN	SET_2DA_ENTRY new_row 1 cols ~%stat%~	SET_2DA_ENTRY new_row 2 cols ~%value%~	SET_2DA_ENTRY new_row 3 cols ~%relation%~	END
+		END
+	BUT_ONLY
+END
+//	Array of Restistance / Stat#
+ACTION_DEFINE_ASSOCIATIVE_ARRAY	DMG_ARRAY	BEGIN
+	~CRUSH~		=>	22
+	~ACID~		=>	17
+	~COLD~		=>	15
+	~ELEC~		=>	16
+	~FIRE~		=>	14
+	~PIERC~		=>	23
+	~POISN~		=>	74
+	~MAGIC~		=>	73
+	~MSSL~		=>	24
+	~SLASH~		=>	21
+	~MFIRE~		=>	19
+	~MCOLD~		=>	20
+END
+ACTION_PHP_EACH	DMG_ARRAY AS one => two	BEGIN
+	LAF	ADD_SPLPROT	INT_VAR	stat = two	value = 100	relation = 	2	RET	min = new_row	END
+	LAF	ADD_SPLPROT	INT_VAR	stat = two	value = 128	relation = 	4	RET	max = new_row	END
+	LAF	ADD_SPLPROT	INT_VAR	stat = 260	value = min	relation = 	max	RET	EVAL ~%one%~ = new_row	END
+END
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY	DMG_ARRAY2	BEGIN
+	~FIRE2~		=>	14
+END
+ACTION_PHP_EACH	DMG_ARRAY2 AS one => two	BEGIN
+	LAF	ADD_SPLPROT	INT_VAR	stat = two	value = 0	relation = 	2	RET	min = new_row	END
+	LAF	ADD_SPLPROT	INT_VAR	stat = two	value = 128	relation = 	4	RET	max = new_row	END
+	LAF	ADD_SPLPROT	INT_VAR	stat = 260	value = min	relation = 	max	RET	EVAL ~%one%~ = new_row	END
+END
+
+///////////////
+// CREATURES //
+///////////////
+
+LAF ADD_IDS_ENTRY INT_VAR minValue = 1 maxValue = 255 preferredValue = 1 STR_VAR idsFile = "race.ids" identifier = "FGENASI" RET value END
+
+OUTER_SET fgenasi_lcase = RESOLVE_STR_REF(~genasi~)
+OUTER_SET fgenasi_ucase = RESOLVE_STR_REF(~Fire Genasi~)
+APPEND ~racetext.2da~ ~FGENASI   %value%        %fgenasi_lcase%       -1         %fgenasi_ucase%          -1~ UNLESS ~FGENASI~
+
+ADD_KIT ~C0PYROM~
+
+ // appended to CLASWEAP.2da
+ ~C0PYROM		1           1           1           1           1           1           1           1~
+
+ // appended column-wise to WEAPPROF.2da
+//11                                T   S           F   Q             S S
+//10                                W   C           L   U             W I
+//9                         B L S   O   I   W       A   A             O N
+//8                         A O H   H   M   A       I   R C   S       R G
+//7         L S           M S N O   A   I   R     H L   T R L H     2 D L 2                 E E E E E E E E E E E
+//6         _ _       S   I T G R   N K T D H     A M   E O O O     H A E W E E E E E E E E X X X X X X X X X X X
+//5         S S   S B P   S A S T   D A A A A   S L O   R S N R   S A N W E X X X X X X X X T T T T T T T T T T T
+//4         W W   P L I   S R W S   E T R G M C P B R M S S G T D L N D E A T T T T T T T T R R R R R R R R R R R
+//3         O O B E U K A I D O W A D A W G M L E E N A T B B B A I D S A P R R R R R R R R A A A A A A A A A A A
+//2         R R O A N E X L S R O X S N A E E U A R I C A O O O R N E H P O A A A A A A A A 1 1 1 1 1 1 1 1 1 1 2
+//1         D D W R T D E E W D R E W A K R R B R D N E F W W W T G D I O N 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0
+ ~C0PYROM	0 1 0 0 1 0 0 1 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0~
+    
+ // appended to ABCLASRQ.2da
+ ~C0PYROM				0      0	16	17	0	0~
+
+ // appended to ABCLSMOD.2da
+ ~C0PYROM				0	0	0	0	0	0~
+
+ // appended to ABDCDSRQ.2da
+ ~C0PYROM                		0       0       0       0       0       0~
+
+ // appended to ABDCSCRQ.2da
+ ~C0PYROM                 	0       0       0       0       0		0~
+
+ // appended to ALIGNMNT.2da		LG	LN	LE	NG	TN	NE	CG	CN	CE 
+ ~C0PYROM                  			1	1	1	1	1	1	1	1	1~
+
+ // appended to DUALCLAS.2da
+ ~C0PYROM                  	0       0       0       0       0       0~
+
+ // path to your CLAB-style 2da file 
+ ~%MOD_FOLDER%/2da/C0PYROM.2da~
+
+ // PC races and classes allowed to use this kit, from KITTABLE.2da
+ ~~
+
+ // usability flags, added to the end of the KITLIST.2da entry
+ ~0x00000000     1~
+
+ // HLA table to use; see LUABBR.2da
+ ~MA01~
+
+ // list of starting equipment for PCs starting in ToB. Appended column-wise to 25STWEAP.2da
+ ~CHAN09 * HELM07 BAG20 RING06 RING31 * BOOT01 AMUL19 BRAC16 BELT06 AROW11,40 BULL03,40 BOLT06,40 POTN52,5 POTN4,2 POTN14,5 HAM07 SW1H27 STAF08~
+
+ // Lower, mixed, and help kit names and descriptions, added to KITLIST.2da
+  SAY ~pyromancer~
+  SAY ~Pyromancer~
+  SAY ~PYROMANCER: This type of mage does not specialize in a particular school, but rather in a specific type of element. Pyromancers use the power of the Elemental Plane of Fire, commanding powerful flames through sheer force of will, although this training has left them less adept at all other forms of magic.
+  
+Advantages:
+– May cast one additional spell per level.
+– +50% bonus to all fire damage dealt.
+– Gains an additional +2% Fire Resistance per level gained to a maximum of +30%.
+– Gains the following spells as mage spells: Fiery Missile, Flame Blade, Lower Fire Resistance, Wall of Fire, Flame Strike, Sol's Searing Orb, Fire Storm, Blazing Inferno, Conflagration
+
+Disadvantages:
+– -50% penalty to all acid, cold, electrical and magical damage dealt.
+– -10% penalty to arcane spell duration.
+– Incurs a -2% penalty to Cold Resistance per level gained to a maximum of -30%.~
+
+LAF fl#add_kit_ee
+  STR_VAR
+    kit_name = C0PYROM
+	hpclass = ~HPWIZ~
+END
+
+ADD_PROJECTILE ~%MOD_FOLDER%/SPELLS/C0PY0011.PRO~ ~C0 FIERY MISSILE 1~
+ADD_PROJECTILE ~%MOD_FOLDER%/SPELLS/C0PY0012.PRO~ ~C0 FIERY MISSILE 2~
+COPY_EXISTING ~C0PY0012.PRO~ ~OVERRIDE/C0PY0013.PRO~
+COPY_EXISTING ~C0PY0012.PRO~ ~OVERRIDE/C0PY0014.PRO~
+COPY_EXISTING ~C0PY0012.PRO~ ~OVERRIDE/C0PY0015.PRO~
+ADD_PROJECTILE ~OVERRIDE/C0PY0013.PRO~ ~C0 FIERY MISSILE 3~
+ADD_PROJECTILE ~OVERRIDE/C0PY0014.PRO~ ~C0 FIERY MISSILE 4~
+ADD_PROJECTILE ~OVERRIDE/C0PY0015.PRO~ ~C0 FIERY MISSILE 5~
+ADD_PROJECTILE ~%MOD_FOLDER%/SPELLS/C0PY0041.PRO~ ~C0 WALL OF FIRE~
+ADD_PROJECTILE ~%MOD_FOLDER%/SPELLS/C0PY0071.PRO~ ~C0 FIRE STORM~
+ADD_PROJECTILE ~%MOD_FOLDER%/SPELLS/C0PY0081.PRO~ ~C0 BLAZING INFERNO~
+
+// FIRE MISSILE
+COPY_EXISTING ~C0PY001.spl~ OVERRIDE
+		LPF	ADD_SPELL_EFFECT
+			INT_VAR
+				insert_point = 0
+				opcode = 324
+				target = 2
+				parameter2 = FIRE
+				duration = 1
+			STR_VAR
+				resource = EVAL ~%SOURCE_RES%~
+		END	
+  LPF ALTER_SPELL_HEADER
+	INT_VAR
+		header = 1
+		projectile = C0PY0011
+END
+  LPF ALTER_SPELL_HEADER
+	INT_VAR
+		header = 2
+		projectile = C0PY0012
+END
+  LPF ALTER_SPELL_HEADER
+	INT_VAR
+		header = 3
+		projectile = C0PY0013
+END
+  LPF ALTER_SPELL_HEADER
+	INT_VAR
+		header = 4
+		projectile = C0PY0014
+END
+  LPF ALTER_SPELL_HEADER
+	INT_VAR
+		header = 5
+		projectile = C0PY0015
+END
+SAY NAME1 ~Fiery Missile~
+SAY UNIDENTIFIED_DESC ~Fiery Missile
+(Evocation)
+
+Level: 1
+Range: Visual range of the caster
+Duration: Instant
+Casting Time: 1
+Area of Effect: 1 creature
+Saving Throw: None
+
+Fiery Missile creates up to five missiles of flame that dart forth from the pyromancer's fingertip and unerringly strike their target, which must be a creature of some sort. Each missile inflicts 1d4+1 points of damage. For every two extra levels of experience, the pyromancer gains an additional missile—she has two at 3rd level, three at 5th level, four at 7th level, and a maximum of five missiles at 9th level.~
+
+// FLAME BLADE
+COPY_EXISTING ~SPPR206.spl~ ~override/C0PY002.spl~
+LPF ALTER_EFFECT INT_VAR match_opcode = 111 STR_VAR resource = c0kfblad END
+WRITE_SHORT 0x1C 1
+SAY NAME1 ~Flame Blade: Modified~
+SAY UNIDENTIFIED_DESC ~Flame Blade
+(Evocation)
+
+Level: 2
+Sphere: Elemental Fire
+Range: 0
+Duration: 4 rounds + 1 round/level
+Casting Time: 4
+Area of Effect: The caster
+Saving Throw: None
+
+With this modified version of the Flame Blade spell, the caster causes a blazing ray of red-hot fire to spring forth from <PRO_HISHER> hand. This blade-like ray is wielded as though the wielder is proficient in long swords, but may attack from an extended range. If the caster successfully hits with the flame blade, the creature struck suffers 1d4 points of slashing damage plus 4 points of fire damage, healing the wielder for the fire damage dealt, with a further 2 fire damage if the creature is undead. The blade strikes as a +1 weapon at 6th level, +2 at 9th level, and +3 at 13th level, +4 at 16th level, and +5 at 19th level.~
+
+COPY_EXISTING ~C0KFBLAD.ITM~ OVERRIDE
+SAY NAME2 ~Modified Flame Blade~
+
+// LOWER FIRE RESISTANCE
+COPY_EXISTING ~C0PY003.spl~ OVERRIDE
+	LPF ALTER_EFFECT INT_VAR header = 0 match_opcode = 139 parameter1 = RESOLVE_STR_REF (~Fire Resistance Lowered by 30%~) END
+	LPF ALTER_EFFECT INT_VAR header = 1 match_opcode = 139 parameter1 = RESOLVE_STR_REF (~Fire Resistance Lowered by 32%~) END
+	LPF ALTER_EFFECT INT_VAR header = 2 match_opcode = 139 parameter1 = RESOLVE_STR_REF (~Fire Resistance Lowered by 34%~) END
+	LPF ALTER_EFFECT INT_VAR header = 3 match_opcode = 139 parameter1 = RESOLVE_STR_REF (~Fire Resistance Lowered by 36%~) END
+	LPF ALTER_EFFECT INT_VAR header = 4 match_opcode = 139 parameter1 = RESOLVE_STR_REF (~Fire Resistance Lowered by 38%~) END
+	LPF ALTER_EFFECT INT_VAR header = 5 match_opcode = 139 parameter1 = RESOLVE_STR_REF (~Fire Resistance Lowered by 40%~) END
+	LPF ALTER_EFFECT INT_VAR header = 6 match_opcode = 139 parameter1 = RESOLVE_STR_REF (~Fire Resistance Lowered by 42%~) END
+	LPF ALTER_EFFECT INT_VAR header = 7 match_opcode = 139 parameter1 = RESOLVE_STR_REF (~Fire Resistance Lowered by 44%~) END
+	LPF ALTER_EFFECT INT_VAR header = 8 match_opcode = 139 parameter1 = RESOLVE_STR_REF (~Fire Resistance Lowered by 46%~) END
+	LPF ALTER_EFFECT INT_VAR header = 9 match_opcode = 139 parameter1 = RESOLVE_STR_REF (~Fire Resistance Lowered by 48%~) END
+	LPF ALTER_EFFECT INT_VAR header = 10 match_opcode = 139 parameter1 = RESOLVE_STR_REF (~Fire Resistance Lowered by 50%~) END
+	LPF ALTER_EFFECT INT_VAR header = 11 match_opcode = 139 parameter1 = RESOLVE_STR_REF (~Fire Resistance Lowered by 52%~) END
+	LPF ALTER_EFFECT INT_VAR header = 12 match_opcode = 139 parameter1 = RESOLVE_STR_REF (~Fire Resistance Lowered by 54%~) END
+	LPF ALTER_EFFECT INT_VAR header = 13 match_opcode = 139 parameter1 = RESOLVE_STR_REF (~Fire Resistance Lowered by 56%~) END
+	LPF ALTER_EFFECT INT_VAR header = 14 match_opcode = 139 parameter1 = RESOLVE_STR_REF (~Fire Resistance Lowered by 58%~) END
+	LPF ALTER_EFFECT INT_VAR header = 15 match_opcode = 139 parameter1 = RESOLVE_STR_REF (~Fire Resistance Lowered by 60%~) END
+	LPF ALTER_EFFECT INT_VAR header = 16 match_opcode = 139 parameter1 = RESOLVE_STR_REF (~Fire Resistance Lowered by 62%~) END
+	LPF ALTER_EFFECT INT_VAR header = 17 match_opcode = 139 parameter1 = RESOLVE_STR_REF (~Fire Resistance Lowered by 64%~) END
+	LPF ALTER_EFFECT INT_VAR header = 18 match_opcode = 139 parameter1 = RESOLVE_STR_REF (~Fire Resistance Lowered by 66%~) END
+	LPF ALTER_EFFECT INT_VAR header = 19 match_opcode = 139 parameter1 = RESOLVE_STR_REF (~Fire Resistance Lowered by 68%~) END
+	LPF ALTER_EFFECT INT_VAR header = 20 match_opcode = 139 parameter1 = RESOLVE_STR_REF (~Fire Resistance Lowered by 70%~) END
+	LPF ALTER_EFFECT INT_VAR header = 21 match_opcode = 139 parameter1 = RESOLVE_STR_REF (~Fire Resistance Lowered by 72%~) END
+	LPF ALTER_EFFECT INT_VAR header = 22 match_opcode = 139 parameter1 = RESOLVE_STR_REF (~Fire Resistance Lowered by 74%~) END
+	LPF ALTER_EFFECT INT_VAR header = 23 match_opcode = 139 parameter1 = RESOLVE_STR_REF (~Fire Resistance Lowered by 76%~) END
+	LPF ALTER_EFFECT INT_VAR header = 24 match_opcode = 139 parameter1 = RESOLVE_STR_REF (~Fire Resistance Lowered by 78%~) END
+	LPF ALTER_EFFECT INT_VAR header = 25 match_opcode = 139 parameter1 = RESOLVE_STR_REF (~Fire Resistance Lowered by 80%~) END
+SAY NAME1 ~Lower Fire Resistance~
+SAY UNIDENTIFIED_DESC ~Lower Fire Resistance
+(Alteration)
+
+Level: 5
+Range: Visual range of the caster
+Duration: 2 turns
+Casting Time: 5
+Area of Effect: 1 creature
+Saving Throw: None
+
+Using this spell, a pyromancer can reduce the Fire Resistance of a target creature by 20% plus 2% per experience level of the caster. There is no Saving Throw, and the target's Magic Resistance, if any, does not affect this spell.~
+
+// WALL OF FIRE
+COPY_EXISTING ~C0PY004.spl~ OVERRIDE
+		LPF	ADD_SPELL_EFFECT
+			INT_VAR
+				insert_point = 0
+				opcode = 324
+				target = 2
+				parameter2 = FIRE
+				duration = 1
+			STR_VAR
+				resource = EVAL ~%SOURCE_RES%~
+		END
+  LPF ALTER_SPELL_HEADER
+	INT_VAR
+		projectile = C0PY0041
+END
+SAY NAME1 ~Wall of Fire~
+SAY UNIDENTIFIED_DESC ~Wall of Fire
+(Invocation)
+
+Level: 4
+Sphere: Elemental Fire
+Range: Visual range of the caster
+Duration: 1 turn
+Casting Time: 7
+Area of Effect: 8 ft. long, 2 ft. wide wall
+Saving Throw: None
+
+When cast, flames erupt in a line formation at the target point, briefly slowing the movement rate and dealing 1d4 points of fire damage plus 1 point per level of the caster to all creatures within the spell's radius. Creatures will take damage once per round regardless of when they enter the area of effect, but cannot suffer damage more than once per round.~
+
+// FLAME STRIKE
+COPY_EXISTING ~SPPR503.spl~ ~override/C0PY005.spl~
+WRITE_SHORT 0x1C 1
+
+// SOL'S SEARING ORB
+COPY_EXISTING ~SPPR614.spl~ ~override/C0PY006.spl~
+WRITE_SHORT 0x1C 1
+
+// FIRE STORM
+COPY_EXISTING ~C0PY007.spl~ ~override~
+  LPF ALTER_SPELL_HEADER
+	INT_VAR
+		projectile = C0PY0071
+END
+SAY UNIDENTIFIED_DESC ~Fire Storm
+(Evocation)
+
+Level: 7
+Range: Visual range of the caster
+Duration: 8 rounds
+Casting Time: 9
+Area of Effect: 15-ft. radius
+Saving Throw: 1/2
+
+This spell causes the area of effect to be covered in roaring flames, dealing 2d8 points of damage plus 1 per level of the caster to anything within the area of effect each round. Victims are allowed a Save vs. Spell each round for half damage.~
+
+// BLAZING INFERNO
+COPY_EXISTING ~C0PY008.spl~ OVERRIDE
+		LPF	ADD_SPELL_EFFECT
+			INT_VAR
+				insert_point = 0
+				opcode = 326
+				target = 2
+				parameter2 = FIRE2
+				duration = 1
+			STR_VAR
+				resource = C0PY008A
+		END
+  LPF ALTER_SPELL_HEADER
+	INT_VAR
+		projectile = C0PY0081
+END
+SAY NAME1 ~Blazing Inferno~
+SAY UNIDENTIFIED_DESC ~Blazing Inferno
+(Evocation)
+
+Level: 8
+Sphere: Elemental Fire
+Range: Visual range of the caster
+Duration: 5 rounds
+Casting Time: 9
+Area of Effect: 20-ft. radius
+Saving Throw: 1/2
+
+"There is no greater pain known than the searing flames of Hell."
+
+This powerful spell unleashes a scorching blast of fire from the Lower Plane of Avernus in the target area of effect, dealing 12d10 unmitigated fire damage (Save vs. Breath Weapons at -4 for half damage), additionally reducing Armor Class by 8 and resistance to physical damage by 40% for 5 rounds.~
+
+// CONFLAGRATION
+
+DEFINE_ACTION_FUNCTION cd_new_portrait_icon
+  INT_VAR string = 0
+  STR_VAR bam_file = "****"
+  RET     icon
+  BEGIN
+
+  COPY_EXISTING ~statdesc.2da~ ~override~
+    COUNT_2DA_ROWS 3 count
+    READ_2DA_ENTRY (count - 1) 0 3 icon
+    SET icon += 1
+
+  APPEND ~statdesc.2da~ ~%icon% %string% %bam_file%~
+
+END
+
+LAF cd_new_portrait_icon INT_VAR string = RESOLVE_STR_REF(~Burning~) STR_VAR bam_file = c0kicon1 RET c0kicon1 = icon END
+
+COPY_EXISTING ~C0PY009.spl~ OVERRIDE
+		LPF	ADD_SPELL_EFFECT
+			INT_VAR
+				insert_point = 0
+				opcode = 324
+				target = 2
+				parameter2 = FIRE
+				duration = 1
+			STR_VAR
+				resource = EVAL ~%SOURCE_RES%~
+		END
+  LPF ALTER_EFFECT
+    INT_VAR
+      match_opcode = 142
+	  parameter2 = c0kicon1
+END
+SAY NAME1 ~Conflagration~
+SAY UNIDENTIFIED_DESC ~Conflagration
+(Evocation)
+
+Level: 9
+Sphere: Elemental Fire
+Range: Visual range of the caster
+Duration: 1 round/level
+Casting Time: 9
+Area of Effect: 1 creature
+Saving Throw: Special
+
+"Burn, burn, burn."
+
+A single creature shall be set aflame with this hideous spell, suffering 5d6 points of damage per round, with no saving throw. The spell lasts 1 round per level of the caster. Anybody within 10 feet of the target will also suffer 5d6 pts. of damage, but are allowed a Saving Throw vs. Spells to halve the damage.~
+
+COPY ~%MOD_FOLDER%/creatures/C0KARIHI.cre~ ~override~
+  SAY NAME1 ~Karihi~
+  SAY NAME2 ~Karihi~
+  WRITE_ASCII SCRIPT_OVERRIDE ~C0KARIHS~ // override
+  WRITE_ASCII DEATHVAR ~C0KARIHI~ // death variable
+  WRITE_ASCII DIALOG ~C0KARIHI~ // dialogue
+  WRITE_ASCII 0X34 ~C0KARIHM~ #8   //small portrait
+  WRITE_ASCII 0x3c ~C0KARIHL~ #8   //medium portrait
+  WRITE_BYTE 0x272 %value%
+  WRITE_SHORT 0x246 (IDS_OF_SYMBOL (~kit~ ~C0PYROM~))
+  SAY BIO ~When asked about her past, KARIHI is unusually reticient, a far cry from her usual fiery and commanding demeanor. All you can discern from the few details you can gather is that she hails from a region in the far eastern corner of Faerûn, and judging from her eloquence and intelligence, is likely of noble descent. Fittingly for her fire genasi heritage, she is hot-tempered and quick to take offense, as well as self-assured and arrogant, but her skills as a pyromancer and scholar are undeniably impressive. Only time could possibly tell what personal secrets she has to hide.~
+  SAY MORALE ~Oh, I'm not dying for you fools!~ [C0KAR01]
+  SAY LEADER ~Finally! I'll lead us away from this accursed chill.~ [C0KAR02]
+  SAY TIRED ~I demand we stop now. I tire!~ [C0KAR03]
+  SAY BORED ~If we do not take action soon, I shall have to start a fire for my own amusement.~ [C0KAR04]
+  SAY BATTLE_CRY1 ~Cleansing fire!~ [C0KAR05]
+  SAY BATTLE_CRY2 ~The blaze shall consume you all!~ [C0KAR06]
+  SAY BATTLE_CRY3 ~Behold the flames of Mystra!~ [C0KAR07]
+  SAY BATTLE_CRY4 ~Burn, and become ash!~ [C0KAR08]
+  SAY BATTLE_CRY5 ~Not even your bones shall remain!~ [C0KAR09]
+  SAY DAMAGE ~Augh!~ [C0KAR10]
+  SAY DYING ~No... how could this... be...?~ [C0KAR11]
+  SAY HURT ~Aid me at once!~ [C0KAR12]
+  SAY AREA_FOREST ~Where there is wood, there shall be fire.~ [C0KAR13]
+  SAY AREA_CITY ~Ah! Civilization. I shall take what I can get.~ [C0KAR14]
+  SAY AREA_DUNGEON ~Hmph. We should set this filthy den ablaze and be done with it.~ [C0KAR15]
+  SAY AREA_DAY ~The sun is but another flame to be commanded.~ [C0KAR16]
+  SAY AREA_NIGHT ~This darkness is easily quelled with the light of a flame.~ [C0KAR17]
+  SAY SELECT_COMMON1 ~Well?~ [C0KAR18]
+  SAY SELECT_COMMON2 ~Speak, now.~ [C0KAR19]
+  SAY SELECT_COMMON3 ~You have a moment of my attention.~ [C0KAR20]
+  SAY SELECT_COMMON4 ~Do you enjoy prodding me?~ [C0KAR21]
+  SAY SELECT_COMMON5 ~*sigh* What?~ [C0KAR22]
+  SAY SELECT_COMMON6 ~I expect you have a task for me?~ [C0KAR23]
+  SAY SELECT_ACTION1 ~Do not presume to command me.~ [C0KAR24]
+  SAY SELECT_ACTION2 ~A simple task for one such as myself.~ [C0KAR25]
+  SAY SELECT_ACTION3 ~Hmph!~ [C0KAR26]
+  SAY SELECT_ACTION4 ~I could almost ask for more.~ [C0KAR27]
+  SAY SELECT_ACTION5 ~Very well.~ [C0KAR28]
+  SAY SELECT_ACTION6 ~This will be amusing, if nothing else.~ [C0KAR29]
+  SAY SELECT_ACTION7 ~So long as you ask nicely.~ [C0KAR30]
+  SAY CRITICAL_HIT ~You are but kindling to me.~ [C0KAR31]
+  SAY CRITICAL_MISS ~I miscalculated?~ [C0KAR32]
+  SAY TARGET_IMMUNE ~Impossible!~ [C0KAR33]
+  SAY INVENTORY_FULL ~I am no mule to hold such a burden! Pick that up, now!~ [C0KAR34]
+  SAY SPELL_DISRUPTED ~Wh—?! How dare you!~ [C0KAR35]
+
+APPEND ~pdialog.2da~ ~C0KARIHI     C0KARIHP           C0KARIHJ          C0KARIHD       C0KARIHP           C0KARIHJ              C0KARIHD              C0KARIHi~
+UNLESS ~C0KARIHI~
+
+APPEND ~interdia.2da~ ~C0KARIHI BC0KARIH BC0KARIH~
+  UNLESS ~C0KARIHI~
+
+APPEND ~STATE.IDS~ // adds custom IsValidForPartyDialogue state
+  ~0x80101FEF CD_STATE_NOTVALID~
+  UNLESS ~CD_STATE_NOTVALID~
+ 
+COPY ~%MOD_FOLDER%/creatures/C0KSERV.cre~ ~override~
+  SAY NAME1 ~Roth~
+  SAY NAME2 ~Roth~
+  WRITE_ASCII DEATHVAR ~C0KSERV~ // death variable
+  WRITE_ASCII DIALOG ~C0KSERV~ // dialogue
+  
+/////////////
+//DIALOGUES//
+/////////////
+ 
+COMPILE ~%MOD_FOLDER%/DIALOGUE/C0KARIHI.D~
+		~%MOD_FOLDER%/DIALOGUE/C0KARIHJ.D~
+		~%MOD_FOLDER%/DIALOGUE/BC0KARIH.D~
+
+///////////
+//SCRIPTS//
+///////////
+ 
+EXTEND_TOP ~AR1000.BCS~ ~%MOD_FOLDER%/SCRIPTS/AR1000.BAF~
+EXTEND_TOP ~BALDUR.BCS~ ~%MOD_FOLDER%/SCRIPTS/BALDUR.BAF~
+EXTEND_TOP ~AR8006.BCS~ ~%MOD_FOLDER%/SCRIPTS/AR8006.BAF~
+
+COMPILE EVAL ~%MOD_FOLDER%/SCRIPTS/C0KARIHS.BAF~
+		~%MOD_FOLDER%/SCRIPTS/C0KARIHR.BAF~
+		~%MOD_FOLDER%/SCRIPTS/C0KARIHD.BAF~
+
+//////////
+//SPELLS//
+//////////
+
+COPY_EXISTING ~C0KARSP1.SPL~ ~OVERRIDE~
+SAY NAME1 ~Scorch~
+SAY UNIDENTIFIED_DESC ~Using her inherent powers as a fire genasi, Karihi has the ability to summon and manipulate flame at will. Once per round, she may inflict 1d3+1 fire damage to any target within touch range, dealing an additional point of damage per 2 levels up to a maximum of 5 at 9th level.~
+
+COPY_EXISTING ~C0PYLS1.SPL~ ~OVERRIDE/C0PYLS2.SPL~
+	LPF ALTER_EFFECT
+		STR_VAR
+			resource = C0PY002
+	END
+
+COPY_EXISTING ~C0PYLS1.SPL~ ~OVERRIDE/C0PYLS3.SPL~
+	LPF ALTER_EFFECT
+		STR_VAR
+			resource = C0PY003
+	END
+
+COPY_EXISTING ~C0PYLS1.SPL~ ~OVERRIDE/C0PYLS4.SPL~
+	LPF ALTER_EFFECT
+		STR_VAR
+			resource = C0PY004
+	END
+
+COPY_EXISTING ~C0PYLS1.SPL~ ~OVERRIDE/C0PYLS5.SPL~
+	LPF ALTER_EFFECT
+		STR_VAR
+			resource = C0PY005
+	END
+
+COPY_EXISTING ~C0PYLS1.SPL~ ~OVERRIDE/C0PYLS6.SPL~
+	LPF ALTER_EFFECT
+		STR_VAR
+			resource = C0PY006
+	END
+
+COPY_EXISTING ~C0PYLS1.SPL~ ~OVERRIDE/C0PYLS7.SPL~
+	LPF ALTER_EFFECT
+		STR_VAR
+			resource = C0PY007
+	END
+
+COPY_EXISTING ~C0PYLS1.SPL~ ~OVERRIDE/C0PYLS8.SPL~
+	LPF ALTER_EFFECT
+		STR_VAR
+			resource = C0PY008
+	END
+
+COPY_EXISTING ~C0PYLS1.SPL~ ~OVERRIDE/C0PYLS9.SPL~
+	LPF ALTER_EFFECT
+		STR_VAR
+			resource = C0PY009
+	END
+
+/////////
+//ITEMS//
+/////////
+
+COPY_EXISTING ~C0KROBE1.ITM~ OVERRIDE
+  LPF ADD_ITEM_EQEFFECT
+    INT_VAR
+      opcode = 319
+	  target = 1
+	  timing = 2
+	  parameter1 = (IDS_OF_SYMBOL (~kit~ ~C0PYROM~))
+	  parameter2 = 9
+	  power = 1
+	  special = RESOLVE_STR_REF (~Pyromancer~)
+END
+SAY NAME2 ~Robe of Eminent Flames~
+SAY DESC ~The robe of Azra Velnath Dilvaalhi, the elder sister of Karihi. Robes such as these were reserved solely for potential leaders of the family, and as such few such robes exist – this one, perhaps, is the last of its kind since the annihilation of House Dilvaalhi. Its tremendous magical power, drawing from the pure element of fire, makes it dangerous if not lethal for anyone but a pyromancer to wear.
+
+STATISTICS:
+
+Equipped abilities:
+– Armor Class: 4
+– Fire Resistance: +30%
+– Casting Speed: +3
+– All fire and magic fire damage inflicted by the character is increased by 40%.
+– Flaming Shroud: When struck by an attack within 5-ft. of the wearer, inflict 1d8+2 damage to the attacker.
+
+Weight: 6~
+
+COPY_EXISTING ~C0KRING1.ITM~ OVERRIDE
+  LPF ADD_ITEM_EQEFFECT
+    INT_VAR
+      opcode = 319
+	  target = 1
+	  timing = 2
+	  parameter2 = 11
+	  power = 1
+	  special = RESOLVE_STR_REF (~Karihi~)
+	STR_VAR
+	  resource = C0Karihi
+END
+SAY NAME2 ~Karihi's Signet Ring~
+SAY DESC ~This gold ring, inlaid with a fire opal carved into a mysterious insignia, is Karihi's birthright, signifying her as the nobility of some faraway land.
+
+STATISTICS:
+
+Equipped abilities:
+– Vocalize
+– Can cast one extra wizard spell of each level
+
+Weight: 0~
+OUTER_SET strref = RESOLVE_STR_REF (~Karihi tears her hand away when you attempt to remove her ring, her eyes blazing with anger.~ [GAM_47])
+APPEND item_use.2da ~C0KRing1 Karihi %strref% 3~
+
+COPY_EXISTING ~C0KSTAF1.ITM~ OVERRIDE
+  LPF ADD_ITEM_EQEFFECT
+    INT_VAR
+      opcode = 319
+	  target = 1
+	  timing = 2
+	  parameter2 = 11
+	  power = 1
+	  special = RESOLVE_STR_REF (~Karihi~)
+	STR_VAR
+	  resource = C0Karihi
+END
+  LPF ALTER_ITEM_HEADER
+	INT_VAR
+		header = 1
+		projectile = C0PY0011
+END
+SAY NAME1 ~Quarterstaff~
+SAY UNIDENTIFIED_DESC ~The simplest and humblest of staff weapons, the quarterstaff is a length of wood ranging six to nine feet in length. High-quality quarterstaves are made of stout oak and are shod with metal at both ends. The quarterstaff must be wielded with both hands.
+
+STATISTICS:
+
+Damage: 1d6 (crushing)
+Speed Factor: 4
+Proficiency Type: Quarterstaff
+Type: Two-handed
+Requires:
+ 5 Strength
+
+Weight: 4~
+SAY NAME2 ~Karihi's Staff of Fire +1~
+SAY DESC ~Karihi's staff is decorated with magical symbols and topped with a hot, glowing gem that burns with the color and intensity of a wild flame. While ornamental in appearance, its enchantments make it a serviceable weapon in combat.
+
+STATISTICS:
+
+THAC0: +1
+Damage (melee): 1d6+1, 1d2 fire
+Damage (ranged): 1d6+3 fire
+Damage type: crushing
+Speed Factor: 4
+Proficiency Type: Quarterstaff
+Type: Two-handed
+Requires:
+ 5 Strength
+
+Weight: 4~
+
+OUTER_SET C0KSTAF1A = RESOLVE_STR_REF (~Ranged Attack~)
+OUTER_SET C0KSTAF1B = RESOLVE_STR_REF (~Melee Attack~)
+APPEND TOOLTIP.2DA ~C0KSTAF1 %C0KSTAF1A% %C0KSTAF1B% -1~ UNLESS ~C0KSTAF1~

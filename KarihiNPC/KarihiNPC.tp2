@@ -1,0 +1,24 @@
+BACKUP ~KarihiNPC/backup~
+AUTHOR ~AionZ (formerly Artemius_I)~
+VERSION ~1.0~
+ALWAYS
+  INCLUDE ~%MOD_FOLDER%/lib/fl#add_kit_ee.tpa~
+  INCLUDE ~%MOD_FOLDER%/lib/alter_script.tpa~
+  INCLUDE ~%MOD_FOLDER%/lib/functions.tph~
+END
+
+AUTO_TRA ~%MOD_FOLDER%/tra/%s~ //~%~
+LANGUAGE 
+  ~English~ 
+  ~english~
+  ~%MOD_FOLDER%/tra/english/setup.tra~
+		 
+BEGIN ~Karihi NPC for Icewind Dale: Enhanced Edition~
+  REQUIRE_PREDICATE (GAME_IS ~iwdee~) ~This component must be installed on IWD:EE.~
+COPY ~%MOD_FOLDER%/2DA~ ~OVERRIDE~
+COPY ~%MOD_FOLDER%/AUDIO~ ~OVERRIDE~
+COPY ~%MOD_FOLDER%/CREATURES~ ~OVERRIDE~
+COPY ~%MOD_FOLDER%/PORTRAITS~ ~OVERRIDE~
+COPY ~%MOD_FOLDER%/ITEMS~ ~OVERRIDE~
+COPY ~%MOD_FOLDER%/SPELLS~ ~OVERRIDE~
+INCLUDE ~%MOD_FOLDER%/lib/karihi.tpa~

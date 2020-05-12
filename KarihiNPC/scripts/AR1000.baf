@@ -1,0 +1,7 @@
+IF
+	Global("C0KarihiSpawn","ar1000",0)
+THEN
+RESPONSE #100
+	SetGlobal("C0KarihiSpawn","ar1000",1)
+	CreateCreatureImpassable("C0KARIHI",[3043.1288],SSW)
+END

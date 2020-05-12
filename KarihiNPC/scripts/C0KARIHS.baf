@@ -1,0 +1,651 @@
+// EXPERIENCE
+
+IF
+  Global("BD_JOINXP","LOCALS",0)
+  InParty(Myself)
+  XPGT(Player1,31999)
+  XPLT(Myself,32000)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    SetGlobal("BD_JOINXP","LOCALS",1)
+	AddSpecialAbility("SPWI114")
+	AddSpecialAbility("SPWI126")
+	AddSpecialAbility("SPWI209")
+	AddSpecialAbility("SPWI217")
+	AddSpecialAbility("SPWI304")
+	AddSpecialAbility("SPWI303")
+    ChangeStat(Myself,XP,32000,SET)
+    SetInterrupt(TRUE)
+END
+
+IF
+  Global("BD_JOINXP","LOCALS",0)
+  InParty(Myself)
+  XPGT(Player1,15999)
+  XPLT(Myself,16000)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    SetGlobal("BD_JOINXP","LOCALS",1)
+	AddSpecialAbility("SPWI114")
+	AddSpecialAbility("SPWI126")
+	AddSpecialAbility("SPWI209")
+	AddSpecialAbility("SPWI217")
+    ChangeStat(Myself,XP,16000,SET)
+    SetInterrupt(TRUE)
+END
+
+IF
+  Global("BD_JOINXP","LOCALS",0)
+  InParty(Myself)
+  XPGT(Player1,7999)
+  XPLT(Myself,8000)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    SetGlobal("BD_JOINXP","LOCALS",1)
+	AddSpecialAbility("SPWI114")
+	AddSpecialAbility("SPWI126")
+	AddSpecialAbility("SPWI209")
+	AddSpecialAbility("SPWI217")
+    ChangeStat(Myself,XP,8000,SET)
+    SetInterrupt(TRUE)
+END
+
+IF
+  Global("BD_JOINXP","LOCALS",0)
+  InParty(Myself)
+  XPGT(Player1,3999)
+  XPLT(Myself,4000)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    SetGlobal("BD_JOINXP","LOCALS",1)
+	AddSpecialAbility("SPWI114")
+    ChangeStat(Myself,XP,4000,SET)
+    SetInterrupt(TRUE)
+END
+
+IF
+  Global("BD_JOINXP","LOCALS",0)
+  InParty(Myself)
+  XPGT(Player1,1999)
+  XPLT(Myself,2000)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    SetGlobal("BD_JOINXP","LOCALS",1)
+    ChangeStat(Myself,XP,2000,SET)
+    SetInterrupt(TRUE)
+END
+
+IF
+  Global("BD_JOINXP","LOCALS",0)
+  InParty(Myself)
+  XPLT(Player1,500)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    SetGlobal("BD_JOINXP","LOCALS",1)
+    SetInterrupt(TRUE)
+END
+
+// AR1201 - Orc Caves
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Myself,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)
+	AreaCheck("AR1201")
+	Global("C0KarihiTalkAR1201","AR1201",0)
+THEN
+  RESPONSE #100
+	SetInterrupt(FALSE)
+	Wait(2)
+	SetGlobal("C0KarihiTalkAR1201","AR1201",1)
+	StartDialogueNoSet(Player1)
+	SetInterrupt(TRUE)
+END
+
+// AR2000 - After Avalanche
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Myself,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)
+	AreaCheck("AR2000")
+	Global("C0KarihiTalkAR2000","AR2000",0)
+THEN
+  RESPONSE #100
+	SetInterrupt(FALSE)
+	Wait(1)
+	SetGlobal("C0KarihiTalkAR2000","AR2000",1)
+	StartDialogueNoSet(Player1)
+	SetInterrupt(TRUE)
+END
+
+// AR2100 - After talking to Arundel
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Myself,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)
+	Global("Vale_Quest","GLOBAL",1)
+	AreaCheck("AR2100")
+	Global("C0KarihiTalkAR2100","AR2100",0)
+THEN
+  RESPONSE #100
+	SetInterrupt(FALSE)
+	Wait(3)
+	SetGlobal("C0KarihiTalkAR2100","AR2100",1)
+	StartDialogueNoSet(Player1)
+	SetInterrupt(TRUE)
+END
+
+// Friendship Talk 1
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Myself,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)
+	AreaCheck("AR2111")
+	Global("C0KarihiFriendTalk1","GLOBAL",1)
+THEN
+  RESPONSE #100
+	SetInterrupt(FALSE)
+	Wait(1)
+	SetGlobal("C0KarihiFriendTalk1","GLOBAL",2)
+	PlaySong(%C0KAMUS%)
+	StartDialogueNoSet(Player1)
+	SetInterrupt(TRUE)
+END
+
+// Friendship Talk 2
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Myself,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)
+	AreaCheck("AR2100")
+	Global("Heartstone_Stolen","GLOBAL",1)
+	Global("C0KarihiFriendTalk1","GLOBAL",3)
+	Global("C0KarihiFriendTalk2","GLOBAL",0)
+THEN
+  RESPONSE #100
+	SetInterrupt(FALSE)
+	Wait(1)
+	SetGlobal("C0KarihiFriendTalk2","GLOBAL",1)
+	StartDialogueNoSet(Player1)
+	SetInterrupt(TRUE)
+END
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Myself,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)
+	AreaCheck("AR2111")
+	Global("C0KarihiFriendTalk2","GLOBAL",2)
+THEN
+  RESPONSE #100
+	SetInterrupt(FALSE)
+	Wait(1)
+	SetGlobal("C0KarihiFriendTalk2","GLOBAL",3)
+	PlaySong(%C0KAMUS%)
+	StartDialogueNoSet(Player1)
+	SetInterrupt(TRUE)
+END
+
+// Friendship Talk 3 - Arundel's Death
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Myself,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)
+	Global("Severed_Hand_Reveal","GLOBAL",1)
+	AreaCheck("AR2100")
+	Global("C0KarihiFriendTalk2","GLOBAL",4)
+	Global("C0KarihiFriendTalk3","GLOBAL",0)
+THEN
+  RESPONSE #100
+	SetInterrupt(FALSE)
+	Wait(1)
+	SetGlobal("C0KarihiFriendTalk3","GLOBAL",1)
+	StartDialogueNoSet(Player1)
+	SetInterrupt(TRUE)
+END
+
+// After sleeping
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Myself,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)
+	Global("C0KarihiSlept","GLOBAL",1)
+THEN
+RESPONSE #100
+	StartDialogueNoSet(Player1)
+END
+
+// Friendship Talk 4 - Meeting Larrel
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Myself,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)
+	Global("OpenDornsDeep","GLOBAL",1)
+	Global("C0KarihiFriendTalk3","GLOBAL",4)
+	Global("C0KarihiFriendTalk4","GLOBAL",0)
+THEN
+  RESPONSE #100
+	SetInterrupt(FALSE)
+	Wait(1)
+	IncrementGlobal("C0KarihiFriendTalk4","GLOBAL",1)
+	StartDialogueNoSet(Player1)
+	SetInterrupt(TRUE)
+END
+
+// Friendship Talk 5 - Crossroads
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Myself,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)
+	AreaCheck("AR7000")
+	Global("C0KarihiKnowsFamilyStory","GLOBAL",1)
+	Global("C0KarihiFriendTalk5","GLOBAL",0)
+THEN
+  RESPONSE #100
+	SetInterrupt(FALSE)
+	Wait(1)
+	IncrementGlobal("C0KarihiFriendTalk5","GLOBAL",1)
+	StartDialogueNoSet(Player1)
+	SetInterrupt(TRUE)
+END
+
+// Friendship Talk 5 - Crossroads
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Myself,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)
+	AreaCheck("AR7000")
+	Global("C0KarihiKnowsFamilyStory","GLOBAL",1)
+	Global("C0KarihiFriendTalk5","GLOBAL",0)
+THEN
+  RESPONSE #100
+	SetInterrupt(FALSE)
+	Wait(1)
+	IncrementGlobal("C0KarihiFriendTalk5","GLOBAL",1)
+	StartDialogueNoSet(Player1)
+	SetInterrupt(TRUE)
+END
+
+// Friendship Talk 6 - Final Talk
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Myself,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)
+	GlobalGT("ALL_KEYS","GLOBAL",5)
+	Global("C0KarihiKnowsFamilyStory","GLOBAL",1)
+	Global("C0KarihiFriendTalk6","GLOBAL",0)
+THEN
+  RESPONSE #100
+	SetInterrupt(FALSE)
+	Wait(1)
+	IncrementGlobal("C0KarihiFriendTalk6","GLOBAL",1)
+	StartDialogueNoSet(Player1)
+	SetInterrupt(TRUE)
+END
+
+// AR2101 - Orrick's Tower
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Myself,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)
+	AreaCheck("AR2101")
+	Global("C0KarihiTalkAR2101","AR2101",0)
+THEN
+  RESPONSE #100
+	SetInterrupt(FALSE)
+	Wait(1)
+	SetGlobal("C0KarihiTalkAR2101","AR2101",1)
+	StartDialogueNoSet(Player1)
+	SetInterrupt(TRUE)
+END
+
+// AR2111 - After talking to Lysan
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Myself,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)
+	!See("LYSAN")
+	!Dead("LYSAN")
+	AreaCheck("AR2111")
+	Global("C0KarihiTalkLysan","AR2111",1)
+THEN
+  RESPONSE #100
+	SetInterrupt(FALSE)
+	Wait(2)
+	SetGlobal("C0KarihiTalkLysan","AR2111",2)
+	StartDialogueNoSet(Player1)
+	SetInterrupt(TRUE)
+END
+
+// AR3001 - After killing Lysan
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Myself,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)
+	Dead("LYSAN")
+	AreaCheck("AR3001")
+	Global("C0KarihiTalkLysanKill","AR3001",0)
+THEN
+  RESPONSE #100
+	SetInterrupt(FALSE)
+	Wait(2)
+	SetGlobal("C0KarihiTalkLysanKill","AR3001",1)
+	StartDialogueNoSet(Player1)
+	SetInterrupt(TRUE)
+END
+
+// AR3502 - Black Wolf's Tomb
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Myself,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)
+	AreaCheck("AR3502")
+	Global("C0KarihiTalkBlackWolf","AR3502",0)
+THEN
+  RESPONSE #100
+	SetInterrupt(FALSE)
+	Wait(2)
+	SetGlobal("C0KarihiTalkBlackWolf","AR3502",1)
+	StartDialogueNoSet(Player1)
+	SetInterrupt(TRUE)
+END
+
+// AR3602 - Temple of the Forgotten God
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Myself,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)
+	Dead("LYSAN")
+	AreaCheck("AR3602")
+	See("AR3602Door1")
+	Global("C0KarihiTalkAR3602","AR3602",0)
+THEN
+  RESPONSE #100
+	SetInterrupt(FALSE)
+	Wait(2)
+	SetGlobal("C0KarihiTalkAR3602","AR3602",1)
+	StartDialogueNoSet(Player1)
+	SetInterrupt(TRUE)
+END
+
+// AR3602 - Temple of the Forgotten God
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Myself,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)
+	Dead("LYSAN")
+	AreaCheck("AR3603")
+	See("Pedestal")
+	Global("C0KarihiTalkAR3603","AR3603",0)
+THEN
+  RESPONSE #100
+	SetInterrupt(FALSE)
+	Wait(1)
+	SetGlobal("C0KarihiTalkAR3603","AR3603",1)
+	StartDialogueNoSet(Player1)
+	SetInterrupt(TRUE)
+END
+
+// AR2100 - Kuldahar attacked
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Myself,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)
+	Global("#spawn_group_1","AR2100",1)
+	AreaCheck("AR2100")
+	Global("C0KarihiTalkKuldaharAttacked","AR2100",0)
+THEN
+  RESPONSE #100
+	SetInterrupt(FALSE)
+	Wait(1)
+	SetGlobal("C0KarihiTalkKuldaharAttacked","AR2100",1)
+	StartDialogueNoSet(Player1)
+	SetInterrupt(TRUE)
+END
+
+// AR5000 - Outside the Severed Hand
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Myself,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)
+	!InMyArea("LARREL")
+	AreaCheck("AR5000")
+	Global("C0KarihiTalkAR5000","AR5000",0)
+THEN
+  RESPONSE #100
+	SetInterrupt(FALSE)
+	Wait(1)
+	SetGlobal("C0KarihiTalkAR5000","AR5000",1)
+	StartDialogueNoSet(Player1)
+	SetInterrupt(TRUE)
+END
+
+// AR6005 - Lich
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Myself,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)
+	Dead("LICH")
+	AreaCheck("AR6005")
+	Global("C0KarihiTalkAR6005","AR6005",0)
+THEN
+  RESPONSE #100
+	SetInterrupt(FALSE)
+	Wait(1)
+	SetGlobal("C0KarihiTalkAR6005","AR6005",1)
+	StartDialogueNoSet(Player1)
+	SetInterrupt(TRUE)
+END
+
+// AR6013 - Forge Relit
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Myself,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)
+	Global("Forge_On","GLOBAL",1)
+	AreaCheck("AR6013")
+	Global("C0KarihiTalkAR6013","AR6013",0)
+THEN
+  RESPONSE #100
+	SetInterrupt(FALSE)
+	Wait(1)
+	SetGlobal("C0KarihiTalkAR6013","AR6013",1)
+	StartDialogueNoSet(Player1)
+	SetInterrupt(TRUE)
+END
+
+// Back to Easthaven
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Myself,CD_STATE_NOTVALID)
+	AreaCheck("AR1100")
+	See("Trigger Point 3")
+	Global("C0KarihiBackToEasthaven","AR1100",0)
+THEN
+  RESPONSE #100
+	SetGlobal("C0KarihiBackToEasthaven","AR1100",1)
+	StartDialogueNoSet(Player1)
+END
+
+// Seeing Remorhaz
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Myself,CD_STATE_NOTVALID)
+	See([0.0.0.REMORHAZ])
+	Global("C0KarihiSeeRemorhaz","GLOBAL",0)
+THEN
+  RESPONSE #100
+	SetGlobal("C0KarihiSeeRemorhaz","GLOBAL",1)
+	StartDialogueNoSet(Player1)
+END
+
+// Items
+
+// Boots of the North
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Myself,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)
+	HasItemEquiped("boot03",Myself)
+	Global("C0KarihiBootsNorthTalk","GLOBAL",0)
+THEN
+  RESPONSE #100
+	SetInterrupt(FALSE)
+	Wait(1)
+	SetGlobal("C0KarihiBootsNorthTalk","GLOBAL",1)
+	StartDialogueNoSet(Player1)
+	SetInterrupt(TRUE)
+END
+
+// Firetamer
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Myself,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)
+	PartyHasItem("l#ibel1")
+	Global("C0KarihiFiretamerTalk","GLOBAL",0)
+THEN
+  RESPONSE #100
+	SetInterrupt(FALSE)
+	Wait(1)
+	SetGlobal("C0KarihiFiretamerTalk","GLOBAL",1)
+	StartDialogueNoSet(Player1)
+	SetInterrupt(TRUE)
+END
+
+// Ioun of Burning Stars
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Myself,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)
+	PartyHasItem("l#iiou1")
+	Global("C0KarihiBurningStarsTalk","GLOBAL",0)
+THEN
+  RESPONSE #100
+	SetInterrupt(FALSE)
+	Wait(1)
+	SetGlobal("C0KarihiBurningStarsTalk","GLOBAL",1)
+	StartDialogueNoSet(Player1)
+	SetInterrupt(TRUE)
+END
+
+// Kossuth's Blood
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Myself,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)
+	PartyHasItem("kossuth")
+	Global("C0KarihiKossuthBloodTalk","GLOBAL",0)
+THEN
+  RESPONSE #100
+	SetInterrupt(FALSE)
+	Wait(1)
+	SetGlobal("C0KarihiKossuthBloodTalk","GLOBAL",1)
+	StartDialogueNoSet(Player1)
+	SetInterrupt(TRUE)
+END
+
+// Post-Encounter
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Myself,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)
+	PartyHasItem("c0krobe1")
+	Global("C0KarihiRobeBlackFlame","GLOBAL",0)
+THEN
+  RESPONSE #100
+	SetInterrupt(FALSE)
+	Wait(1)
+	SetGlobal("C0KarihiRobeBlackFlame","GLOBAL",1)
+	StartDialogueNoSet(Player1)
+	SetInterrupt(TRUE)
+END

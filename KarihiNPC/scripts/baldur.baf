@@ -1,0 +1,27 @@
+// Set Romance Match
+
+IF
+	Gender(Player1,MALE)
+	!Race(Player1,HALFLING)
+	!Race(Player1,GNOME)
+	!Race(Player1,DWARF)
+	!Race(Player1,HALFORC)
+	!CheckStatGT(Player1,9,CHR)
+	Global("C0KarihiMatch","GLOBAL",0)
+THEN
+  RESPONSE #100
+	SetGlobal("C0KarihiMatch","GLOBAL",-1)
+END
+
+IF
+	Gender(Player1,MALE)
+	!Race(Player1,HALFLING)
+	!Race(Player1,GNOME)
+	!Race(Player1,DWARF)
+	!Race(Player1,HALFORC)
+	CheckStatGT(Player1,9,CHR)
+	Global("C0KarihiMatch","GLOBAL",0)
+THEN
+  RESPONSE #100
+	SetGlobal("C0KarihiMatch","GLOBAL",1)
+END
