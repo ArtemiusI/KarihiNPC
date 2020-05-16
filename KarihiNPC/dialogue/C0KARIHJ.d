@@ -1053,7 +1053,7 @@ CHAIN C0KARIHJ KARIHI-F4-4
 ~Seeing Larrel, the shadow of what he once was—powerful, learned, prideful—has brought me perspective I never believed I could see.~
 = ~In some ways, I am... fortunate, I suppose, not to have been condemned to the same fate of seeing the consequences of my pride. That, or I am simply a coward. Yes... that might be it.~
 END
-+ ~Global("C0KarihiSlept","GLOBAL",2)~ + ~Tell me the truth, Karihi. What happened to your family?~ DO ~SetGlobal("C0KarihiSlept","GLOBAL",2)~ + KARIHI-F4-5A
++ ~Global("C0KarihiSlept","GLOBAL",2)~ + ~Tell me the truth, Karihi. What happened to your family?~ DO ~SetGlobal("C0KarihiSlept","GLOBAL",3)~ + KARIHI-F4-5A
 + ~!Global("C0KarihiSlept","GLOBAL",2)~ + ~Tell me the truth, Karihi. What happened to your family?~ + KARIHI-F4-5B
 ++ ~Keep your musings to yourself. I have no interest in them.~ + KARIHI-F4-X
 
@@ -1251,11 +1251,11 @@ END
 
 CHAIN C0KARIHJ KARIHI-F5-8
 ~I... would have told you sooner, had I not been held back by pride.~
-EXTERN C0KARIHJ KARIHI-F5-11
+EXTERN C0KARIHJ KARIHI-F5-12
 
 CHAIN C0KARIHJ KARIHI-F5-9
 ~I could not ask for more.~
-EXTERN C0KARIHJ KARIHI-F5-11
+EXTERN C0KARIHJ KARIHI-F5-12
 
 CHAIN C0KARIHJ KARIHI-F5-10
 ~I do not believe I am, <PLAYER1>, not yet. Though perhaps in time, with your influence, I will be.~
