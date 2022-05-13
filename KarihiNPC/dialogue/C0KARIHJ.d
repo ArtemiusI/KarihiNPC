@@ -82,15 +82,16 @@ EXTERN C0KSERV KARIHI-SERVANT-7
 CHAIN C0KSERV KARIHI-SERVANT-7
 ~No... please, NOOOO!~
 DO ~ClearAllActions()
-StartCutSceneMode()
-CutSceneId("C0KARIHI")
-Wait(1)
-ForceSpellRES("C0PY009","C0KSERV")
-ActionOverride("C0KSERV",DisplayStringHead(Myself,%AAAAAAAGGGGGHHHH!%)
-Wait(1)
-Kill("C0KSERV")
-Wait(4)
-StartDialogueNoSet(Player1)~ EXIT
+ActionOverride("C0KARIHI",StartCutSceneMode())
+ActionOverride("C0KARIHI",CutSceneId(Player1))
+ActionOverride("C0KARIHI",Wait(1))
+ActionOverride("C0KARIHI",ForceSpellRES("C0PY009","C0KSERV"))
+ActionOverride("C0KARIHI",DisplayStringHead("C0KSERV",43481))
+ActionOverride("C0KARIHI",Wait(1))
+ActionOverride("C0KARIHI",Kill("C0KSERV"))
+ActionOverride("C0KARIHI",Wait(4))
+ActionOverride("C0KARIHI",EndCutSceneMode())
+ActionOverride("C0KARIHI",StartDialogNoSet(Player1))~ EXIT
 
 CHAIN C0KARIHJ KARIHI-SERVANT-8
 ~Tch...~
@@ -1706,18 +1707,18 @@ EXIT
 // ALPHEUS
 
 I_C_T2 DALPHEUS 2 C0KarihiAlpheus
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~Oh, this will be fun. Time to take you Hosttower inepts down a peg!~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~Oh, this will be fun. Time to take you Hosttower inepts down a peg!~
 END
 
 // AMBERE
 
 INTERJECT DAMBERE 6 C0KarihiAmbere
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~You pitiful... wretched woman! Will you be so blind to ignore what you have until it is lost to you?!~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~You pitiful... wretched woman! Will you be so blind to ignore what you have until it is lost to you?!~
 == DAMBERE ~What... what would you know? Standing there, with your gold and finery, daring to assume you know a thing about me...~
 EXTERN DAMBERE 7
 
 INTERJECT DAMBERE 8 C0KarihiAmbere2
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~Then you are not merely blind, but foolish! A foolish woman who gambles away her own dignity in a desperate hope to satisfy her own delusional dreams!~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~Then you are not merely blind, but foolish! A foolish woman who gambles away her own dignity in a desperate hope to satisfy her own delusional dreams!~
 END
 + ~GlobalGT("C0KarihiEncounter","GLOBAL",0)~ + ~This isn't about you, Karihi!~ EXTERN C0KARIHJ C0KarihiAmbere3
 ++ ~That's enough, Karihi!~ EXTERN C0KARIHJ C0KarihiAmbere3
@@ -1741,17 +1742,17 @@ INTERJECT DARUNDEL 5 C0KarihiArundel
 EXTERN DARUNDEL 6
 
 I_C_T DARUNDEL 39 C0KarihiArundel1
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~And the last warm ember of this frozen wasteland extinguished. That, I could sympathize with.~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~And the last warm ember of this frozen wasteland extinguished. That, I could sympathize with.~
 END
 
 I_C_T DARUNDEL 92 C0KarihiArundel2
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~How quaint. Are you to flee now after your pitiful attempts at intimidation, or would you prefer a taste of what suffering truly is here and now?!~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~How quaint. Are you to flee now after your pitiful attempts at intimidation, or would you prefer a taste of what suffering truly is here and now?!~
 END
 
 // BELHIFET
 
 I_C_T DBELHIFE 11 C0KarihiBelfihet
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~You speak of inevitability in the face of impending defeat? Laughable! Your end is nigh, fiend!~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~You speak of inevitability in the face of impending defeat? Laughable! Your end is nigh, fiend!~
 END
 
 // COW
@@ -1769,14 +1770,14 @@ END
 // CUSTHANTHOS
 
 I_C_T DCUSTHAN 0 C0KarihiCusthanthos
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~How ridiculous. This spirit is even more insane than the rest. At least it is not violent.~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~How ridiculous. This spirit is even more insane than the rest. At least it is not violent.~
 == DCUSTHAN ~Be quiet! And extinguish those flames. You will ruin the collection!~
 END
 
 // DAVIN
 
 INTERJECT DDAVIN 0 C0KarihiDavin
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~Rescind that absurd assumption, fool. We are no servants of these cold-dwelling primitives.~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~Rescind that absurd assumption, fool. We are no servants of these cold-dwelling primitives.~
 EXTERN DDAVIN 2
 
 // DURDEL ANATHA
@@ -1789,48 +1790,48 @@ END
 // ELISIA
 
 I_C_T DELISIA 0 C0KarihiElisia
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~A sea elf... how curious. I have never seen one such creature before... ugh. Its clammy skin offends my senses.~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~A sea elf... how curious. I have never seen one such creature before... ugh. Its clammy skin offends my senses.~
 == DELISIA ~The woman looks pained, but does not respond.~
 END
 
 // EREVAIN
 
 I_C_T DEREVAIN 3 C0KarihiErevain
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~Ah! Finally, somebody in this town with some sense. I thought the cold had made everyone here take leave of their senses.~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~Ah! Finally, somebody in this town with some sense. I thought the cold had made everyone here take leave of their senses.~
 == DEREVAIN ~Well... I would not go that far as to say that.~
 END
 
 // GELARITH
 
 I_C_T DGELARIT 9 C0KarihiGelarith
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~Quite an impressive device... if only I had an opportunity to study its purpose. Pity.~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~Quite an impressive device... if only I had an opportunity to study its purpose. Pity.~
 END
 
 // GINAFAE
 
 I_C_T DGINAFAE 28 C0KarihiGinafae
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~And I thought this sight could not get more sickening.~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~And I thought this sight could not get more sickening.~
 END
 
 I_C_T DGINAFAE 13 C0KarihiGinafae2
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~Crazy? Delusional would be a more apt term.~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~Crazy? Delusional would be a more apt term.~
 END
 
 // GOBLIN MARSHAL
 
 INTERJECT DGOBLINC 4 C0KarihiGoblin
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~Evidently the sign of a mind-effecting enchantment. A powerful one, at that.~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~Evidently the sign of a mind-effecting enchantment. A powerful one, at that.~
 EXTERN DGOBLINC 6
 
 // GRISELLA
 
 I_C_T DGRISELL 5 C0KarihiGrisella
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~Pests infesting every establishment of this accursed town! We may as well start a great fire and eliminate them all in one fell swoop.~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~Pests infesting every establishment of this accursed town! We may as well start a great fire and eliminate them all in one fell swoop.~
 == DGRISELL ~I—I think I could do without that sort of help, dearie, though I, er... appreciate the thought.~
 END
 
 I_C_T2 DGRISELL 13 C0KarihiGrisella2
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~I think I deserve a drink to wash down this urge to gag after having the little vermin get so close to my body. Blech!~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~I think I deserve a drink to wash down this urge to gag after having the little vermin get so close to my body. Blech!~
 END
 
 // Hjollder
@@ -1842,7 +1843,7 @@ END
 // HROTHGAR
 
 I_C_T DHROTH 5 C0KarihiHrothgar
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~This dull little town draws enough attention for its safety to be threatened? Well, there's a surprise.~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~This dull little town draws enough attention for its safety to be threatened? Well, there's a surprise.~
 END
 
 // KIERAN
@@ -1858,7 +1859,7 @@ I_C_T2 DKONTIK 8 C0KarihiKontik
 END
 
 INTERJECT DKONTIK 0 C0KarihiKontik
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~You have neither the will nor the way to make demands of me, Aurilite.~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~You have neither the will nor the way to make demands of me, Aurilite.~
 == DKONTIK ~Abomination! You dare to stand before me and taint the blessed chill of Auril's touch? This insult will not go unanswered!~
 == C0KARIHJ ~How predictable.~
 == DKONTIK ~Children of Auril! Slay them all!~
@@ -1866,7 +1867,7 @@ DO ~Enemy()
 AddJournalEntry(20452,INFO)~ EXIT
 
 INTERJECT DKONTIK 1 C0KarihiKontik
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~You have neither the will nor the way to make demands of me, Aurilite.~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~You have neither the will nor the way to make demands of me, Aurilite.~
 == DKONTIK ~Abomination! You dare to stand before me and taint the blessed chill of Auril's touch? This insult will not go unanswered!~
 == C0KARIHJ ~How predictable.~
 == DKONTIK ~Children of Auril! Slay them all!~
@@ -1876,13 +1877,13 @@ AddJournalEntry(20452,INFO)~ EXIT
 // KRESSELACK
 
 I_C_T DKRESSEL 18 C0KarihiKresselack
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~Ah. Aurilites. Truly those deserving of an eternity trapped in the frozen pits of the fifth layer of hell.~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~Ah. Aurilites. Truly those deserving of an eternity trapped in the frozen pits of the fifth layer of hell.~
 END
 
 // LARREL
 
 INTERJECT DLARREL 0 C0KarihiLarrel
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~Well, this seems promising.~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~Well, this seems promising.~
 EXTERN DLARREL 0
 
 // LUREMASTER
@@ -1915,47 +1916,47 @@ INTERJECT DLYSANPR 8 C0KarihiLysan
 DO ~SetGlobal("Know_Lysan","GLOBAL",2)~ EXTERN DLYSANPR 10
 
 I_C_T DLYSANPR 19 C0KarihiLysan2
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~My, such arrogance! Let me see it melt to terror as my incandescent blaze reduces your goddess's gifts to dust in the wind!~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~My, such arrogance! Let me see it melt to terror as my incandescent blaze reduces your goddess's gifts to dust in the wind!~
 == DLYSANPR ~Oh, is that so, blasphemer? Then I swear by the Frostmaiden, I shall first smother the flames of your base existence!~
 END
 
 // MIREK
 
 I_C_T2 DMIREK 0 C0KarihiMirek1
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~Ah, finally! A creature that burns easily. Just keep them at a distance. Their odor is sickening!~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~Ah, finally! A creature that burns easily. Just keep them at a distance. Their odor is sickening!~
 END
 
 I_C_T DMIREK 6 C0KarihiMirek2
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~The price had best be worth the labor and displeasure of holding onto the fetid creatures' hides for any amount of time. Ugh!~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~The price had best be worth the labor and displeasure of holding onto the fetid creatures' hides for any amount of time. Ugh!~
 END
 
 // OLD JED
 
 I_C_T DOLDJED 0 C0KarihiOldJed
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~Ugh! What an unsightly creature. Do not breathe in my direction!~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~Ugh! What an unsightly creature. Do not breathe in my direction!~
 == DOLDJED ~*burp* Eh?~
 END
 
 // PERDIEM
 
 I_C_T DPERDIEM 5 C0KarihiPerdiem1
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~This... this is a powerful display of suggestion, <PLAYER1>. Only an archmage could be capable of this. Or something... more.~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~This... this is a powerful display of suggestion, <PLAYER1>. Only an archmage could be capable of this. Or something... more.~
 END
 
 I_C_T DPERDIEM 10 C0KarihiPerdiem2
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~Having the power of domination of this level is... unsettling. I fear we are threatened by more than a simple magician.~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~Having the power of domination of this level is... unsettling. I fear we are threatened by more than a simple magician.~
 END
 
 // POMAB
 
 INTERJECT DPOMAB 0 C0KarihiPomab
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~"Barbarians"? Why, you loathsome little toad! You have three seconds to apologize before I turn this pathetic pawnshop into your funeral pyre!~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~"Barbarians"? Why, you loathsome little toad! You have three seconds to apologize before I turn this pathetic pawnshop into your funeral pyre!~
 EXTERN DPOMAB 2
 
 // PRESIO
 
 I_C_T DUNDLT1 0 C0KarihiPresio
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~Hmph. This is an undead vessel serving as the eyes and ears of a necromancer, <PLAYER1>. Nothing more than a cheap parlor trick.~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~Hmph. This is an undead vessel serving as the eyes and ears of a necromancer, <PLAYER1>. Nothing more than a cheap parlor trick.~
 == DUNDLT1 ~Such arrogant dismissiveness towards the art of unlife! You will regret your words soon enough, I assure you.~
 END
 
@@ -1977,24 +1978,24 @@ COPY_TRANS DQUIMBY 1
 // SAABLIC
 
 I_C_T DSAABLIC 2 C0KarihiSaablic
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~Ugh, say no more. If this creature was once a Thayan, he undoubtly more than deserves such a pitiful fate.~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~Ugh, say no more. If this creature was once a Thayan, he undoubtly more than deserves such a pitiful fate.~
 == DSAABLIC ~A mage... would not so easily... choose ignorance... listen... and you will not regret...~
 END
 
 I_C_T2 DSAABLIC 10 C0KarihiSaablic1
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~This will be the first time I wittingly extend aid to a Red Wizard. May it be the only time.~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~This will be the first time I wittingly extend aid to a Red Wizard. May it be the only time.~
 END
 
 // ULIGAR
 
 INTERJECT DORCCHIE 0 C0KarihiUligar
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~Ridiculous! Pay tribute to disgusting orcs? I have more respect for the dirt under my boot!~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~Ridiculous! Pay tribute to disgusting orcs? I have more respect for the dirt under my boot!~
 EXTERN DORCCHIE 2
 
 // WEENOG
 
 I_C_T DWEENOG 0 C0KarihiWeenog
-== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~A goblin manservant?! I suppose even the greatest of mages must sometimes scrape the very bottom of the barrel.~
+== C0KARIHJ IF ~InMyArea("C0KARIHI") IsValidForPartyDialog("C0KARIHI")~ THEN ~A goblin manservant?! I suppose even the greatest of mages must sometimes scrape the very bottom of the barrel.~
 == DWEENOG ~Oh, no, no, no... this not good. Weenog will be punished if any of master's things get burned again. Where did Weenog leave that bucket? You must stands still so Weenog can put out the fire on your hair.~
 == C0KARIHJ ~Wh—?! Get that thing out of my sight before I turn you into a scorching pile of stinking flesh, you varmint!~
 == DWEENOG ~Aaah! Y–yes, mistress! Weenog put it away right now, mistress!~
