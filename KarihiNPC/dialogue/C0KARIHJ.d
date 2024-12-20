@@ -1888,7 +1888,7 @@ EXTERN DLARREL 0
 
 // LUREMASTER
 
-I_C_T DLURE 30 C0CaedrielLuremaster
+I_C_T DLURE 30 C0KarihiLuremaster
 == C0KARIHJ IF ~IsValidForPartyDialog("C0CAED")~ THEN ~No doom shall befall my name, for I intend to achieve immortality through the pages of history.~
 END
 
