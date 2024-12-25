@@ -1,0 +1,14 @@
+IF
+	True()
+THEN
+RESPONSE #100
+	CutSceneId("C0KARIHI")
+	Wait(1)
+	ForceSpellRES("C0PY009","C0KSERV")
+	DisplayStringHead("C0KSERV",~aaaAAAaaAAAGGHHH!~)
+	Wait(1)
+	Kill("C0KSERV")
+	Wait(4)
+	EndCutSceneMode()
+	StartDialogNoSet(Player1)
+END

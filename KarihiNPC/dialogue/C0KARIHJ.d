@@ -82,16 +82,8 @@ EXTERN C0KSERV KARIHI-SERVANT-7
 CHAIN C0KSERV KARIHI-SERVANT-7
 ~No... please, NOOOO!~
 DO ~ClearAllActions()
-ActionOverride("C0KARIHI",StartCutSceneMode())
-ActionOverride("C0KARIHI",CutSceneId(Player1))
-ActionOverride("C0KARIHI",Wait(1))
-ActionOverride("C0KARIHI",ForceSpellRES("C0PY009","C0KSERV"))
-ActionOverride("C0KARIHI",DisplayStringHead("C0KSERV",43481))
-ActionOverride("C0KARIHI",Wait(1))
-ActionOverride("C0KARIHI",Kill("C0KSERV"))
-ActionOverride("C0KARIHI",Wait(4))
-ActionOverride("C0KARIHI",EndCutSceneMode())
-ActionOverride("C0KARIHI",StartDialogNoSet(Player1))~ EXIT
+StartCutSceneMode()
+StartCutScene("C0KARCS1")~ EXIT
 
 CHAIN C0KARIHJ KARIHI-SERVANT-8
 ~Tch...~
@@ -1889,7 +1881,7 @@ EXTERN DLARREL 0
 // LUREMASTER
 
 I_C_T DLURE 30 C0KarihiLuremaster
-== C0KARIHJ IF ~IsValidForPartyDialog("C0CAED")~ THEN ~No doom shall befall my name, for I intend to achieve immortality through the pages of history.~
+== C0KARIHJ IF ~IsValidForPartyDialog("C0KARIHI")~ THEN ~No doom shall befall my name, for I intend to achieve immortality through the pages of history.~
 END
 
 // LYSAN
